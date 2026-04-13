@@ -287,20 +287,54 @@
       padding-bottom: 13px;
     }
 
-    /* ─── WHY WE LIKE TAGS ───────────────────────────────── */
-    .why-tag {
+    /* ─── HIGHLIGHTS ─────────────────────────────────────── */
+    .highlights-text {
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: var(--text-body);
+    }
+    .read-more-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--brand-teal);
+      background: none;
+      border: 1.5px solid var(--brand-teal);
+      border-radius: 8px;
+      cursor: pointer;
+      padding: 7px 14px;
+      font-family: inherit;
+      letter-spacing: 0.01em;
+      transition: background 0.15s, color 0.15s;
+      width: 100%;
+    }
+    .read-more-btn:hover { background: var(--brand-teal); color: var(--white); }
+    .read-more-row td { padding: 6px 16px 14px; border-bottom: none; }
+
+    /* ─── FUND TAGS ──────────────────────────────────────── */
+    .fund-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .fund-tag {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 500;
       color: var(--brand-teal);
       background: rgba(1,74,76,0.07);
       padding: 4px 10px 4px 8px;
       border-radius: 20px;
-      line-height: 1.35;
+      line-height: 1.3;
+      white-space: nowrap;
     }
-    .why-tag::before {
+    .fund-tag::before {
       content: '';
       display: block;
       width: 5px;
@@ -309,6 +343,7 @@
       background: var(--mint);
       flex-shrink: 0;
     }
+    .tags-row td { padding-top: 6px; padding-bottom: 10px; }
 
     /* ─── TFOOT / CTA ROW ────────────────────────────────── */
     .cta-row td {
@@ -491,30 +526,95 @@
 
     /* ─── GROWTH CHART LINK ROW ─────────────────────────── */
     .chart-link-row td {
-      padding: 6px 16px 8px;
+      padding: 6px 16px 10px;
       border-bottom: none;
-      background: rgba(1,74,76,0.03);
+      background: transparent;
     }
     .chart-link-row .row-label {
-      background: rgba(1,74,76,0.03);
+      background: var(--white);
       border-right-color: var(--border);
     }
     .growth-link {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      font-size: 11px;
+      justify-content: center;
+      gap: 5px;
+      width: 100%;
+      font-size: 12px;
       font-weight: 600;
       color: var(--brand-teal);
       background: none;
-      border: none;
-      padding: 0;
+      border: 1.5px solid var(--brand-teal);
+      border-radius: 8px;
+      padding: 7px 14px;
       cursor: pointer;
       font-family: inherit;
-      opacity: 0.7;
-      transition: opacity 0.15s;
+      transition: background 0.15s, color 0.15s;
     }
-    .growth-link:hover { opacity: 1; }
+    .growth-link:hover { background: var(--brand-teal); color: var(--white); }
+
+    /* ─── PERF SUB-LABEL ─────────────────────────────────── */
+    .perf-sub-label td {
+      padding: 10px 16px 4px;
+      border-bottom: none;
+    }
+    .perf-sub-label .row-label {
+      padding-bottom: 4px;
+    }
+    .perf-sub-label-text {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ─── VOLATILITY METER ───────────────────────────────── */
+    .vol-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .vol-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .vol-track {
+      height: 6px;
+      background: var(--border);
+      border-radius: 99px;
+      position: relative;
+    }
+    .vol-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #7cebc6 0%, #014a4c 100%);
+      position: relative;
+    }
+    .vol-fill::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--brand-teal);
+      border: 2px solid var(--white);
+      box-shadow: 0 0 0 1.5px var(--brand-teal);
+    }
+    .vol-val {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-body);
+      font-variant-numeric: tabular-nums;
+    }
 
     /* ─── GROWTH DRAWER ──────────────────────────────────── */
     .drawer-backdrop {
@@ -530,7 +630,7 @@
 
     .drawer {
       background: var(--white);
-      width: min(660px, 100vw);
+      width: min(70vw, 100vw);
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -540,6 +640,50 @@
     }
     .drawer-backdrop.open .drawer {
       transform: translateX(0);
+    }
+    .drawer.drawer-narrow {
+      width: min(420px, 100vw);
+    }
+
+    /* ─── DISCLOSURE DRAWER CONTENT ─────────────────────── */
+    .disclosure-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--dark-teal);
+      margin-bottom: 16px;
+    }
+    .disclosure-body {
+      font-size: 12.5px;
+      line-height: 1.75;
+      color: var(--text-body);
+    }
+
+    /* ─── INFO TRIGGER ───────────────────────────────────── */
+    .info-trigger {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1.5px solid var(--text-muted);
+      color: var(--text-muted);
+      font-size: 9px;
+      font-weight: 700;
+      font-style: normal;
+      cursor: pointer;
+      background: none;
+      padding: 0;
+      font-family: inherit;
+      margin-left: 5px;
+      vertical-align: middle;
+      transition: border-color 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+    .info-trigger:hover { border-color: var(--brand-teal); color: var(--brand-teal); }
+    .row-label-wrap {
+      display: flex;
+      align-items: center;
     }
 
     .drawer-header {
@@ -580,6 +724,15 @@
     }
     .drawer-close:hover { border-color: var(--brand-teal); color: var(--brand-teal); }
 
+    .drawer-stats-label {
+      padding: 10px 20px 4px;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
     .drawer-stats {
       display: flex;
       gap: 0;
@@ -615,6 +768,49 @@
       min-height: 0;
       display: flex;
       flex-direction: column;
+      overflow-y: auto;
+    }
+
+    /* ─── HIGHLIGHTS DRAWER CONTENT ─────────────────────── */
+    .hl-intro {
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: var(--text-body);
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .hl-section {
+      margin-bottom: 28px;
+    }
+    .hl-section-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--dark-teal);
+      letter-spacing: 0em;
+      margin-bottom: 8px;
+    }
+    .hl-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: var(--brand-teal);
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .hl-section-body {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-body);
+      padding-left: 36px;
     }
     .drawer-chart-wrap {
       flex: 1;
@@ -716,7 +912,7 @@
 
         <!-- OVERVIEW rows (no section label, just data) -->
         <tr>
-          <th scope="row" class="row-label">Strategic role</th>
+          <th scope="row" class="row-label"><span class="row-label-wrap">Strategic role<button class="info-trigger" id="strategicRoleInfoBtn">i</button></span></th>
           <td>Core</td>
           <td>Core</td>
           <td>Core</td>
@@ -724,7 +920,7 @@
         </tr>
 
         <tr>
-          <th scope="row" class="row-label">Asset type</th>
+          <th scope="row" class="row-label"><span class="row-label-wrap">Asset type<button class="info-trigger" id="assetTypeInfoBtn">i</button></span></th>
           <td>Equity</td>
           <td>Credit</td>
           <td>Equity</td>
@@ -740,7 +936,57 @@
         </tr>
 
         <tr>
-          <th scope="row" class="row-label">Risk rating</th>
+          <th scope="row" class="row-label">Description</th>
+          <td><p class="highlights-text">Invest in a diversified portfolio of private companies across industries and geographies, targeting long-term capital appreciation.</p></td>
+          <td><p class="highlights-text">Access a diversified mix of private credit strategies through a single fund designed to generate consistent income.</p></td>
+          <td><p class="highlights-text">Gain exposure to a diversified portfolio of institutional private real estate strategies designed to generate income and potential appreciation.</p></td>
+          <td><p class="highlights-text">Invest in a portfolio of private real estate investments spanning equity and debt sourced and managed by Clarion Partners.</p></td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">What sets it apart</th>
+          <td>
+            <p class="highlights-text">Emphasis on private equity secondaries, which are seasoned funds with demonstrated performance.</p>
+            <div class="fund-tags">
+              <span class="fund-tag">Secondaries-focused</span>
+              <span class="fund-tag">3,000+ private companies</span>
+            </div>
+          </td>
+          <td>
+            <p class="highlights-text">Dynamically shifts across credit strategies as conditions evolve, seeking to capture attractive income across changing environments.</p>
+            <div class="fund-tags">
+              <span class="fund-tag">Multiple strategies</span>
+              <span class="fund-tag">Tactical asset allocation</span>
+            </div>
+          </td>
+          <td>
+            <p class="highlights-text">Invests across institutional real estate funds representing $80 trillion in gross asset value and otherwise requiring multi-million dollar commitments.</p>
+            <div class="fund-tags">
+              <span class="fund-tag">Institutional funds</span>
+              <span class="fund-tag">$80T in gross asset value</span>
+            </div>
+          </td>
+          <td>
+            <p class="highlights-text">Investments are directly sourced and managed by Clarion Partners, offering greater control over asset selection, operations, and value creation.</p>
+            <div class="fund-tags">
+              <span class="fund-tag">Directly sourced and managed</span>
+              <span class="fund-tag">Debt and equity</span>
+              <span class="fund-tag">Multi-family and industrial warehouse</span>
+            </div>
+          </td>
+        </tr>
+
+        <tr class="read-more-row">
+          <td class="row-label"></td>
+          <td><button class="read-more-btn" data-highlights="stepstone">Read more ↗</button></td>
+          <td><button class="read-more-btn" data-highlights="carlyle">Read more ↗</button></td>
+          <td><button class="read-more-btn" data-highlights="goldman">Read more ↗</button></td>
+          <td><button class="read-more-btn" data-highlights="clarion">Read more ↗</button></td>
+        </tr>
+
+        <!-- RISK RATING — commented out
+        <tr>
+          <th scope="row" class="row-label"><span class="row-label-wrap">Risk rating<button class="info-trigger" id="riskInfoBtn">i</button></span></th>
           <td>
             <div class="dots" title="2 of 4">
               <span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span>
@@ -762,51 +1008,7 @@
             </div>
           </td>
         </tr>
-
-        <tr>
-          <th scope="row" class="row-label">Structure</th>
-          <td>Tender offer fund</td>
-          <td>Interval fund</td>
-          <td>Interval fund</td>
-          <td>Interval fund</td>
-        </tr>
-
-        <tr>
-          <th scope="row" class="row-label">Inception date</th>
-          <td>Oct 1, 2020</td>
-          <td>Jun 4, 2018</td>
-          <td>Jul 10, 2017</td>
-          <td>Sep 27, 2019</td>
-        </tr>
-
-        <!-- ─── WHY WE LIKE ─── -->
-        <tr class="section-hdr">
-          <td colspan="5">Why we like</td>
-        </tr>
-
-        <tr>
-          <th scope="row" class="row-label" style="color:var(--text-muted);font-weight:400">1</th>
-          <td><span class="why-tag">Broad private equity exposure</span></td>
-          <td><span class="why-tag">Tactical asset allocation</span></td>
-          <td><span class="why-tag">Capture the next wave of CRE growth</span></td>
-          <td><span class="why-tag">Directly originated</span></td>
-        </tr>
-
-        <tr>
-          <th scope="row" class="row-label" style="color:var(--text-muted);font-weight:400">2</th>
-          <td><span class="why-tag">Focus on seasoned investments</span></td>
-          <td><span class="why-tag">Diversification across strategies</span></td>
-          <td><span class="why-tag">Fund of funds</span></td>
-          <td><span class="why-tag">Equity and debt</span></td>
-        </tr>
-
-        <tr>
-          <th scope="row" class="row-label" style="color:var(--text-muted);font-weight:400">3</th>
-          <td><span class="why-tag">Seasoned manager</span></td>
-          <td><span class="why-tag">Directly originated</span></td>
-          <td><span class="why-tag">Equity and debt</span></td>
-          <td><span class="why-tag" style="opacity:0.6">TBD</span></td>
-        </tr>
+        -->
 
         <!-- PORTFOLIO HOLDINGS -->
         <tr class="section-hdr">
@@ -817,16 +1019,16 @@
           <th scope="row" class="row-label">AUM</th>
           <td>$5.3B</td>
           <td>$6.1B</td>
-          <td>$314.1M<br><span style="font-size:11px;color:var(--text-muted);font-weight:400">$80T Gross Asset Value</span></td>
+          <td>$314.1M</td>
           <td>$1.31B</td>
         </tr>
 
         <tr>
           <th scope="row" class="row-label">Investments</th>
-          <td>3,000+ portfolio companies</td>
+          <td>3,000+ portfolio companies<br><span style="font-size:11px;color:var(--text-muted);font-weight:400">591 total investments</span></td>
           <td>900+ investments</td>
-          <td><span class="na">—</span></td>
-          <td><span class="na">—</span></td>
+          <td>39 institutional real estate funds</td>
+          <td>41 private real estate investments</td>
         </tr>
 
         <tr class="row-breakdown">
@@ -848,7 +1050,15 @@
             </ul>
             <button class="view-all-btn">+1 more ↗</button>
           </td>
-          <td><span class="na">—</span></td>
+          <td class="chart-trigger" data-chart="goldman-strategies">
+            <ul class="breakdown">
+              <li><span class="bk-label">Real Estate Equity (Private)</span><span class="bk-val">65%</span></li>
+              <li><span class="bk-label">Real Estate Equity (Public)</span><span class="bk-val">25%</span></li>
+              <li><span class="bk-label">Real Estate Debt (Private)</span><span class="bk-val">6%</span></li>
+              <li><span class="bk-label">Cash</span><span class="bk-val">3%</span></li>
+              <li><span class="bk-label">Real Estate Debt (Public)</span><span class="bk-val">2%</span></li>
+            </ul>
+          </td>
           <td class="chart-trigger" data-chart="clarion-strategies">
             <ul class="breakdown">
               <li><span class="bk-label">Private Real Estate Equity</span><span class="bk-val">57%</span></li>
@@ -880,7 +1090,16 @@
             </ul>
             <button class="view-all-btn">+5 more ↗</button>
           </td>
-          <td><span class="na">—</span></td>
+          <td class="chart-trigger" data-chart="goldman-sector">
+            <ul class="breakdown">
+              <li><span class="bk-label">Industrial</span><span class="bk-val">31%</span></li>
+              <li><span class="bk-label">Multifamily</span><span class="bk-val">22%</span></li>
+              <li><span class="bk-label">Student Housing</span><span class="bk-val">7%</span></li>
+              <li><span class="bk-label">Office</span><span class="bk-val">5%</span></li>
+              <li><span class="bk-label">Single Family</span><span class="bk-val">4%</span></li>
+            </ul>
+            <button class="view-all-btn">+9 more ↗</button>
+          </td>
           <td class="chart-trigger" data-chart="clarion-sector">
             <ul class="breakdown">
               <li><span class="bk-label">Industrial</span><span class="bk-val">40%</span></li>
@@ -898,16 +1117,13 @@
           <td colspan="5">Performance</td>
         </tr>
 
-        <tr class="chart-link-row">
+        <tr class="perf-sub-label">
           <td class="row-label"></td>
-          <td><button class="growth-link" data-growth="stepstone">Growth of $100K ↗</button></td>
-          <td><button class="growth-link" data-growth="carlyle">Growth of $100K ↗</button></td>
-          <td><button class="growth-link" data-growth="goldman">Growth of $100K ↗</button></td>
-          <td><button class="growth-link" data-growth="clarion">Growth of $100K ↗</button></td>
+          <td colspan="4"><span class="perf-sub-label-text">Annualized total returns</span></td>
         </tr>
 
         <tr>
-          <th scope="row" class="row-label">1-year</th>
+          <th scope="row" class="row-label">1 year</th>
           <td><span class="num pos">+10.79%</span></td>
           <td><span class="num pos">+3.58%</span></td>
           <td><span class="num neg">−2.49%</span></td>
@@ -915,7 +1131,7 @@
         </tr>
 
         <tr>
-          <th scope="row" class="row-label">3-years</th>
+          <th scope="row" class="row-label">3 year</th>
           <td><span class="num pos">+10.07%</span></td>
           <td><span class="num pos">+8.24%</span></td>
           <td><span class="num neg">−2.09%</span></td>
@@ -923,7 +1139,7 @@
         </tr>
 
         <tr>
-          <th scope="row" class="row-label">5-years</th>
+          <th scope="row" class="row-label">5 year</th>
           <td><span class="num pos">+14.06%</span></td>
           <td><span class="num pos">+6.71%</span></td>
           <td><span class="num pos">+0.25%</span></td>
@@ -938,12 +1154,60 @@
           <td><span class="num pos">+7.37%</span></td>
         </tr>
 
+        <tr class="chart-link-row">
+          <td class="row-label"></td>
+          <td><button class="growth-link" data-growth="stepstone">View growth chart ↗</button></td>
+          <td><button class="growth-link" data-growth="carlyle">View growth chart ↗</button></td>
+          <td><button class="growth-link" data-growth="goldman">View growth chart ↗</button></td>
+          <td><button class="growth-link" data-growth="clarion">View growth chart ↗</button></td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Annualized volatility</th>
+          <td>
+            <div class="vol-wrap">
+              <div class="vol-track"><div class="vol-fill" style="width:40%"></div></div>
+              <div class="vol-labels"><span>Low</span><span>High</span></div>
+              <span class="vol-val">0.8</span>
+            </div>
+          </td>
+          <td>
+            <div class="vol-wrap">
+              <div class="vol-track"><div class="vol-fill" style="width:20%"></div></div>
+              <div class="vol-labels"><span>Low</span><span>High</span></div>
+              <span class="vol-val">0.4</span>
+            </div>
+          </td>
+          <td>
+            <div class="vol-wrap">
+              <div class="vol-track"><div class="vol-fill" style="width:30%"></div></div>
+              <div class="vol-labels"><span>Low</span><span>High</span></div>
+              <span class="vol-val">0.6</span>
+            </div>
+          </td>
+          <td>
+            <div class="vol-wrap">
+              <div class="vol-track"><div class="vol-fill" style="width:25%"></div></div>
+              <div class="vol-labels"><span>Low</span><span>High</span></div>
+              <span class="vol-val">0.5</span>
+            </div>
+          </td>
+        </tr>
+
         <tr>
           <th scope="row" class="row-label">Yield</th>
           <td><span class="na">—</span></td>
           <td><span class="num neut">6.52%</span></td>
           <td><span class="num neut">5.97%</span></td>
           <td><span class="num neut">6.38%</span></td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Inception date</th>
+          <td>Oct 1, 2020</td>
+          <td>Jun 4, 2018</td>
+          <td>Jul 10, 2017</td>
+          <td>Sep 27, 2019</td>
         </tr>
 
         <!-- LIQUIDITY, DISTRIBUTIONS & TAXES -->
@@ -975,6 +1239,14 @@
           <td>1099</td>
         </tr>
 
+        <tr>
+          <th scope="row" class="row-label">Structure</th>
+          <td>Tender offer fund</td>
+          <td>Interval fund</td>
+          <td>Interval fund</td>
+          <td>Interval fund</td>
+        </tr>
+
         <!-- ─── MANAGER ─── -->
         <tr class="section-hdr">
           <td colspan="5">Manager</td>
@@ -990,10 +1262,10 @@
 
         <tr>
           <th scope="row" class="row-label">Manager AUM</th>
-          <td><span class="na">—</span></td>
-          <td><span class="na">—</span></td>
-          <td><span class="na">—</span></td>
-          <td><span class="na">—</span></td>
+          <td>$220B</td>
+          <td>$477B</td>
+          <td>$3.21T<br><span style="font-size:11px;color:var(--text-muted);font-weight:400">assets under supervision</span></td>
+          <td>$72B</td>
         </tr>
 
         <!-- ─── FEES & EXPENSES ─── -->
@@ -1040,35 +1312,39 @@
         <tr class="cta-row">
           <td class="row-label"></td>
 
+          <!-- StepStone -->
           <td>
             <div class="cta-stack">
-              <a href="#" class="btn-primary">Invest now</a>
-              <a href="#" class="btn-ghost">View offering page</a>
-              <a href="#" class="btn-ghost">Download prospectus</a>
+              <a href="https://www.willowwealth.com/invest/hxQ24w" class="btn-primary" target="_blank" rel="noopener">Invest now</a>
+              <a href="https://www.willowwealth.com/offering/hxQ24w/" class="btn-ghost" target="_blank" rel="noopener">View offering page</a>
+              <a href="https://go.stepstonegroup.com/rs/664-QRQ-541/images/SPRIM_US_Prospectus.pdf" class="btn-ghost" target="_blank" rel="noopener">Download prospectus</a>
             </div>
           </td>
 
+          <!-- Carlyle -->
           <td>
             <div class="cta-stack">
-              <a href="#" class="btn-primary">Invest now</a>
-              <a href="#" class="btn-ghost">View offering page</a>
-              <a href="#" class="btn-ghost">Download prospectus</a>
+              <a href="https://www.willowwealth.com/invest/Ku5x5Q" class="btn-primary" target="_blank" rel="noopener">Invest now</a>
+              <a href="https://www.willowwealth.com/offering/Ku5x5Q/" class="btn-ghost" target="_blank" rel="noopener">View offering page</a>
+              <a href="https://www.carlyle.com/sites/default/files/2026-03/CTAC%20-%20Prospectus%20March%202026%20%28with%20March%2024th%20supplement%29.pdf" class="btn-ghost" target="_blank" rel="noopener">Download prospectus</a>
             </div>
           </td>
 
+          <!-- Goldman -->
           <td>
             <div class="cta-stack">
-              <a href="#" class="btn-primary">Invest now</a>
-              <a href="#" class="btn-ghost">View offering page</a>
-              <a href="#" class="btn-ghost">Download prospectus</a>
+              <a href="https://www.willowwealth.com/invest/ssbtpg" class="btn-primary" target="_blank" rel="noopener">Invest now</a>
+              <a href="https://www.willowwealth.com/offering/ssbtpg/" class="btn-ghost" target="_blank" rel="noopener">View offering page</a>
+              <a href="https://am.gs.com/public-assets/documents/f49aa989-24e2-11ef-ad18-dd37ce7fb223?view=true" class="btn-ghost" target="_blank" rel="noopener">Download prospectus</a>
             </div>
           </td>
 
+          <!-- Clarion -->
           <td>
             <div class="cta-stack">
-              <a href="#" class="btn-primary">Invest now</a>
-              <a href="#" class="btn-ghost">View offering page</a>
-              <a href="#" class="btn-ghost">Download prospectus</a>
+              <a href="https://www.willowwealth.com/invest/4thQzA" class="btn-primary" target="_blank" rel="noopener">Invest now</a>
+              <a href="https://www.willowwealth.com/offering/4thQzA/" class="btn-ghost" target="_blank" rel="noopener">View offering page</a>
+              <a href="https://www.franklintempleton.com/tools-and-resources/lit-preview/92083/I/clarion-partners-real-estate-income-fund-inc#prospectus" class="btn-ghost" target="_blank" rel="noopener">Download prospectus</a>
             </div>
           </td>
         </tr>
@@ -1089,10 +1365,86 @@
       </div>
       <button class="drawer-close" id="drawerClose">&#215;</button>
     </div>
+    <div class="drawer-stats-label">Annualized total return</div>
     <div class="drawer-stats" id="drawerStats"></div>
     <div class="drawer-body">
       <div class="drawer-chart-wrap">
         <canvas id="growthChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HIGHLIGHTS DRAWER ════════════════════════════════════ -->
+<div class="drawer-backdrop" id="highlightsDrawer">
+  <div class="drawer">
+    <div class="drawer-header">
+      <div>
+        <p class="drawer-eyebrow">Fund highlights</p>
+        <h3 class="drawer-title" id="hlDrawerTitle"></h3>
+      </div>
+      <button class="drawer-close" id="hlDrawerClose">&#215;</button>
+    </div>
+    <div class="drawer-body" id="hlDrawerBody"></div>
+  </div>
+</div>
+
+<!-- ═══ RISK DISCLOSURE DRAWER ═══════════════════════════════ -->
+<div class="drawer-backdrop" id="riskDrawer">
+  <div class="drawer drawer-narrow">
+    <div class="drawer-header">
+      <div>
+        <h3 class="drawer-title">Risk rating</h3>
+      </div>
+      <button class="drawer-close" id="riskDrawerClose">&#215;</button>
+    </div>
+    <div class="drawer-body">
+      <p class="disclosure-body">The risk rating assigned to this investment is for illustrative purposes only and is based on Willow Wealth's internal methodology, which is based on an assessment of a number of factors which may include, but not limited to the characteristics of the counterparties as applicable, the profile of the collateral, the capital structure of the investment, among other factors, depending on the type of investment. Willow Wealth's risk ratings are inherently subjective and are assigned relative to other funds presented on Willow Wealth's website and should not be compared to traditional investment risk categorizations for securities with public markets. Willow Wealth's risk rating methodology is not able to capture all future risks that may develop in a particular investment, and therefore represent a point in time assessment of the risk rating relative. It is not a guarantee of performance or an assessment of all potential risks or factors, but rather is an assessment by Willow Wealth of where on the risk spectrum the investment falls. Investors should carefully review the offering documents for a comprehensive discussion of the investment's risk factors before making an investment decision.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STRATEGIC ROLE DRAWER ════════════════════════════════ -->
+<div class="drawer-backdrop" id="strategicRoleDrawer">
+  <div class="drawer drawer-narrow">
+    <div class="drawer-header">
+      <div>
+        <h3 class="drawer-title">Strategic role</h3>
+      </div>
+      <button class="drawer-close" id="strategicRoleDrawerClose">&#215;</button>
+    </div>
+    <div class="drawer-body">
+      <div class="hl-section">
+        <div class="hl-section-heading" style="font-size:14px;">Core</div>
+        <p class="disclosure-body">Large, diversified funds designed to anchor your portfolio and seek to provide risk-adjusted returns over time.</p>
+      </div>
+      <div class="hl-section">
+        <div class="hl-section-heading" style="font-size:14px;">Satellite</div>
+        <p class="disclosure-body">Differentiated individual investments and funds may target a particular theme or exposure or seek differentiated sources of potential return ("alpha").</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ASSET TYPE DRAWER ════════════════════════════════════ -->
+<div class="drawer-backdrop" id="assetTypeDrawer">
+  <div class="drawer drawer-narrow">
+    <div class="drawer-header">
+      <div>
+        <h3 class="drawer-title">Asset types</h3>
+      </div>
+      <button class="drawer-close" id="assetTypeDrawerClose">&#215;</button>
+    </div>
+    <div class="drawer-body">
+      <div class="hl-section">
+        <div class="hl-section-heading" style="font-size:14px;">Credit</div>
+        <p class="disclosure-body">Returns are primarily from income generated through a contractual stream of cash flows.</p>
+        <p class="disclosure-body" style="margin-top:8px;color:var(--text-muted);font-size:12px;">Public markets equivalent: <strong>Bonds</strong></p>
+      </div>
+      <div class="hl-section">
+        <div class="hl-section-heading" style="font-size:14px;">Equity</div>
+        <p class="disclosure-body">Returns are primarily from price appreciation or capital gains on the underlying asset.</p>
+        <p class="disclosure-body" style="margin-top:8px;color:var(--text-muted);font-size:12px;">Public markets equivalent: <strong>Stocks</strong></p>
       </div>
     </div>
   </div>
@@ -1170,6 +1522,37 @@
         { label: 'Consumer Discretionary',   pct: 9  },
         { label: 'Communication Services',   pct: 7  },
         { label: 'Other',                    pct: 5  },
+      ]
+    },
+    'goldman-strategies': {
+      fund: 'Goldman Sachs Real Estate Diversified Income Fund',
+      title: 'Strategy allocation',
+      items: [
+        { label: 'Real Estate Equity (Private)', pct: 65 },
+        { label: 'Real Estate Equity (Public)',  pct: 25 },
+        { label: 'Real Estate Debt (Private)',   pct: 6  },
+        { label: 'Cash',                         pct: 3  },
+        { label: 'Real Estate Debt (Public)',    pct: 2  },
+      ]
+    },
+    'goldman-sector': {
+      fund: 'Goldman Sachs Real Estate Diversified Income Fund',
+      title: 'Sector allocation',
+      items: [
+        { label: 'Industrial',            pct: 31 },
+        { label: 'Multifamily',           pct: 22 },
+        { label: 'Student Housing',       pct: 7  },
+        { label: 'Office',                pct: 5  },
+        { label: 'Single Family',         pct: 4  },
+        { label: 'Lab Office',            pct: 4  },
+        { label: 'Self Storage',          pct: 4  },
+        { label: 'Healthcare',            pct: 4  },
+        { label: 'Towers',                pct: 3  },
+        { label: 'Hotels',                pct: 3  },
+        { label: 'Manufactured Housing',  pct: 3  },
+        { label: 'Retail',                pct: 2  },
+        { label: 'Data Centers',          pct: 2  },
+        { label: 'Agency',                pct: 2  },
       ]
     },
     'clarion-strategies': {
@@ -1253,28 +1636,28 @@
 
 <script>
 // ═══ GROWTH OF $100K CHARTS ══════════════════════════════════
-// PLACEHOLDER DATA — replace labels/values with real CSV data
 
 const GROWTH_DATA = {
   stepstone: {
     fund: 'StepStone Private Markets Fund',
-    inception: 'Oct 2020',
+    inception: 'Nov 2020',
     stats: [
-      { label: '1-year',        val: '+10.79%', cls: 'pos' },
-      { label: '3-years',       val: '+10.07%', cls: 'pos' },
-      { label: 'Since inception', val: '+18.38%', cls: 'pos' },
+      { label: '1 year',          val: '+10.79%', cls: 'pos' },
+      { label: '3 year',          val: '+10.07%', cls: 'pos' },
+      { label: '5 year',          val: '+15.0%',  cls: 'pos' },
+      { label: 'Since inception', val: '+132.3%', cls: 'pos' },
     ],
-    // PLACEHOLDER — paste real monthly data here
-    labels: ['Oct 2020','Jan 2021','Apr 2021','Jul 2021','Oct 2021','Jan 2022','Apr 2022','Jul 2022','Oct 2022','Jan 2023','Apr 2023','Jul 2023','Oct 2023','Jan 2024','Apr 2024','Jul 2024','Oct 2024'],
-    values: [100000,103200,107100,111400,116000,119500,122800,124200,126700,130900,135600,140800,146200,152100,158400,163900,118380],
+    labels: ['Nov 2020','Dec 2020','Jan 2021','Feb 2021','Mar 2021','Apr 2021','May 2021','Jun 2021','Jul 2021','Aug 2021','Sep 2021','Oct 2021','Nov 2021','Dec 2021','Jan 2022','Feb 2022','Mar 2022','Apr 2022','May 2022','Jun 2022','Jul 2022','Aug 2022','Sep 2022','Oct 2022','Nov 2022','Dec 2022','Jan 2023','Feb 2023','Mar 2023','Apr 2023','May 2023','Jun 2023','Jul 2023','Aug 2023','Sep 2023','Oct 2023','Nov 2023','Dec 2023','Jan 2024','Feb 2024','Mar 2024','Apr 2024','May 2024','Jun 2024','Jul 2024','Aug 2024','Sep 2024','Oct 2024','Nov 2024','Dec 2024','Jan 2025','Feb 2025','Mar 2025','Apr 2025','May 2025','Jun 2025','Jul 2025','Aug 2025','Sep 2025','Oct 2025','Nov 2025','Dec 2025'],
+    values: [100000,115410,115632,117406,120953,125610,132188,133629,140429,148817,148633,147228,150037,153579,154176,155444,160667,162830,164024,163735,164073,162457,162081,162871,165238,165948,174319,173254,174700,175765,174776,179266,182082,178809,177744,177592,182999,186206,188955,190635,197470,195026,197050,197094,200120,202304,207092,207360,209506,208566,210844,211037,210265,212272,218178,222917,223266,224079,229191,231391,230489,232264],
   },
   carlyle: {
     fund: 'Carlyle Tactical Private Credit Fund',
     inception: 'Jul 2018',
     stats: [
-      { label: '1-year',        val: '+3.58%',  cls: 'pos' },
-      { label: '3-years',       val: '+8.24%',  cls: 'pos' },
-      { label: 'Since inception', val: '—',     cls: '' },
+      { label: '1 year',          val: '+3.58%', cls: 'pos' },
+      { label: '3 year',          val: '+8.24%', cls: 'pos' },
+      { label: '5 year',          val: '+7.7%',  cls: 'pos' },
+      { label: 'Since inception', val: '—',      cls: '' },
     ],
     labels: ['Jul 2018','Aug 2018','Sep 2018','Oct 2018','Nov 2018','Dec 2018','Jan 2019','Feb 2019','Mar 2019','Apr 2019','May 2019','Jun 2019','Jul 2019','Aug 2019','Sep 2019','Oct 2019','Nov 2019','Dec 2019','Jan 2020','Feb 2020','Mar 2020','Apr 2020','May 2020','Jun 2020','Jul 2020','Aug 2020','Sep 2020','Oct 2020','Nov 2020','Dec 2020','Jan 2021','Feb 2021','Mar 2021','Apr 2021','May 2021','Jun 2021','Jul 2021','Aug 2021','Sep 2021','Oct 2021','Nov 2021','Dec 2021','Jan 2022','Feb 2022','Mar 2022','Apr 2022','May 2022','Jun 2022','Jul 2022','Aug 2022','Sep 2022','Oct 2022','Nov 2022','Dec 2022','Jan 2023','Feb 2023','Mar 2023','Apr 2023','May 2023','Jun 2023','Jul 2023','Aug 2023','Sep 2023','Oct 2023','Nov 2023','Dec 2023','Jan 2024','Feb 2024','Mar 2024','Apr 2024','May 2024','Jun 2024','Jul 2024','Aug 2024','Sep 2024','Oct 2024','Nov 2024','Dec 2024','Jan 2025','Feb 2025','Mar 2025','Apr 2025','May 2025','Jun 2025','Jul 2025','Aug 2025','Sep 2025','Oct 2025','Nov 2025','Dec 2025'],
     values: [100000,100000,100500,100600,100400,98200,99300,100300,100700,101900,102300,102400,102600,101800,101200,99700,100300,102600,103500,102500,87000,85600,90000,94500,95600,95600,97900,98200,100700,103800,104900,105900,107500,108100,108700,110900,111000,111000,113100,113000,112700,115000,114900,114100,115100,115400,111900,109900,111300,113400,111100,111000,112800,113400,116800,117500,117300,118700,119000,120500,122900,124400,125400,125400,127100,129100,130600,131700,133000,134000,135500,136400,137500,138200,139500,140500,141600,142300,143600,144200,143600,143400,145000,146200,147400,148400,149300,149700,150000,150600],
@@ -1283,8 +1666,9 @@ const GROWTH_DATA = {
     fund: 'Goldman Sachs Real Estate Diversified Income Fund',
     inception: 'Aug 2017',
     stats: [
-      { label: '1-year',        val: '−2.49%',  cls: 'neg' },
-      { label: '3-years',       val: '−2.09%',  cls: 'neg' },
+      { label: '1 year',          val: '−2.49%', cls: 'neg' },
+      { label: '3 year',          val: '−2.09%', cls: 'neg' },
+      { label: '5 year',          val: '+1.1%',  cls: 'pos' },
       { label: 'Since inception', val: '+2.40%', cls: 'pos' },
     ],
     labels: ['Aug 2017','Sep 2017','Oct 2017','Nov 2017','Dec 2017','Jan 2018','Feb 2018','Mar 2018','Apr 2018','May 2018','Jun 2018','Jul 2018','Aug 2018','Sep 2018','Oct 2018','Nov 2018','Dec 2018','Jan 2019','Feb 2019','Mar 2019','Apr 2019','May 2019','Jun 2019','Jul 2019','Aug 2019','Sep 2019','Oct 2019','Nov 2019','Dec 2019','Jan 2020','Feb 2020','Mar 2020','Apr 2020','May 2020','Jun 2020','Jul 2020','Aug 2020','Sep 2020','Oct 2020','Nov 2020','Dec 2020','Jan 2021','Feb 2021','Mar 2021','Apr 2021','May 2021','Jun 2021','Jul 2021','Aug 2021','Sep 2021','Oct 2021','Nov 2021','Dec 2021','Jan 2022','Feb 2022','Mar 2022','Apr 2022','May 2022','Jun 2022','Jul 2022','Aug 2022','Sep 2022','Oct 2022','Nov 2022','Dec 2022','Jan 2023','Feb 2023','Mar 2023','Apr 2023','May 2023','Jun 2023','Jul 2023','Aug 2023','Sep 2023','Oct 2023','Nov 2023','Dec 2023','Jan 2024','Feb 2024','Mar 2024','Apr 2024','May 2024','Jun 2024','Jul 2024','Aug 2024','Sep 2024','Oct 2024','Nov 2024','Dec 2024','Jan 2025','Feb 2025','Mar 2025','Apr 2025','May 2025','Jun 2025','Jul 2025','Aug 2025','Sep 2025','Oct 2025','Nov 2025','Dec 2025'],
@@ -1292,14 +1676,15 @@ const GROWTH_DATA = {
   },
   clarion: {
     fund: 'Clarion Partners Real Estate Income Fund',
-    inception: 'Sep 2019',
+    inception: 'Oct 2019',
     stats: [
-      { label: '1-year',        val: '+4.21%',  cls: 'pos' },
-      { label: '3-years',       val: '+3.35%',  cls: 'pos' },
-      { label: 'Since inception', val: '+7.37%', cls: 'pos' },
+      { label: '1 year',          val: '+4.21%', cls: 'pos' },
+      { label: '3 year',          val: '+3.35%', cls: 'pos' },
+      { label: '5 year',          val: '+7.7%',  cls: 'pos' },
+      { label: 'Since inception', val: '+56.0%', cls: 'pos' },
     ],
-    labels: ['Sep 2019','Dec 2019','Mar 2020','Jun 2020','Sep 2020','Dec 2020','Mar 2021','Jun 2021','Sep 2021','Dec 2021','Mar 2022','Jun 2022','Sep 2022','Dec 2022','Mar 2023','Jun 2023','Sep 2023','Dec 2023','Mar 2024','Jun 2024','Sep 2024'],
-    values: [100000,101800,99200,97600,100400,103100,106200,109500,113000,116600,119400,118200,115600,114200,115800,117400,119200,121000,122800,124600,107371],
+    labels: ['Oct 2019','Nov 2019','Dec 2019','Jan 2020','Feb 2020','Mar 2020','Apr 2020','May 2020','Jun 2020','Jul 2020','Aug 2020','Sep 2020','Oct 2020','Nov 2020','Dec 2020','Jan 2021','Feb 2021','Mar 2021','Apr 2021','May 2021','Jun 2021','Jul 2021','Aug 2021','Sep 2021','Oct 2021','Nov 2021','Dec 2021','Jan 2022','Feb 2022','Mar 2022','Apr 2022','May 2022','Jun 2022','Jul 2022','Aug 2022','Sep 2022','Oct 2022','Nov 2022','Dec 2022','Jan 2023','Feb 2023','Mar 2023','Apr 2023','May 2023','Jun 2023','Jul 2023','Aug 2023','Sep 2023','Oct 2023','Nov 2023','Dec 2023','Jan 2024','Feb 2024','Mar 2024','Apr 2024','May 2024','Jun 2024','Jul 2024','Aug 2024','Sep 2024','Oct 2024','Nov 2024','Dec 2024','Jan 2025','Feb 2025','Mar 2025','Apr 2025','May 2025','Jun 2025','Jul 2025','Aug 2025','Sep 2025','Oct 2025','Nov 2025','Dec 2025'],
+    values: [100000,100597,100964,101772,102278,98786,99445,99910,100794,101368,101837,103043,103623,106734,107438,108037,108218,110424,111361,112197,116593,117342,119394,129985,129804,130061,133189,134444,136159,136659,138280,139682,142452,143427,144170,144809,145080,144568,142442,143174,143678,143173,143838,143315,143040,143824,142963,143059,143148,143370,143722,144652,145354,145822,146151,146489,146464,147672,148268,148369,148474,149102,149604,150219,150995,151644,152039,152174,152835,153505,154049,154455,154995,155429,155958],
   },
 };
 
@@ -1394,11 +1779,145 @@ document.querySelectorAll('.growth-link').forEach(btn => {
   btn.addEventListener('click', () => openGrowthDrawer(btn.dataset.growth));
 });
 
-// ─── Close ────────────────────────────────────────────────────
+// ─── Close growth drawer ──────────────────────────────────────
 const growthDrawer = document.getElementById('growthDrawer');
 document.getElementById('drawerClose').addEventListener('click', () => growthDrawer.classList.remove('open'));
 growthDrawer.addEventListener('click', e => { if (e.target === growthDrawer) growthDrawer.classList.remove('open'); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') growthDrawer.classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { growthDrawer.classList.remove('open'); highlightsDrawer.classList.remove('open'); riskDrawer.classList.remove('open'); assetTypeDrawer.classList.remove('open'); strategicRoleDrawer.classList.remove('open'); } });
+
+// ─── About the fund drawer ────────────────────────────────────────
+const HIGHLIGHTS_DATA = {
+  stepstone: {
+    name: 'StepStone Private Markets Fund',
+    intro: 'The StepStone Private Markets Fund (SPRIM) is designed to serve as a core private equity allocation, seeking to deliver long-term capital appreciation with the simplicity of an evergreen fund structure. SPRIM provides diversified exposure to a $5.3 billion portfolio across strategies, sectors, and geographies.',
+    sections: [
+      {
+        heading: 'Broad private equity exposure',
+        body: 'SPRIM\'s $5.6 billion portfolio includes nearly 500 individual investments and more than 3,000 underlying companies as of December 31, 2025. Alongside private equity, the fund incorporates real assets and private credit to help enhance diversification. The fund is differentiated by its allocation to secondaries, which may provide embedded potential return and a shorter time horizon.',
+      },
+      {
+        heading: 'Historical performance through market cycles',
+        body: 'Launched in 2020, SPRIM has delivered competitive historical performance across market environments — including periods when public equities faced significant challenges such as the 2022 market sell-off. Since inception, the fund has historically outperformed the S&P 500.',
+      },
+      {
+        heading: 'Simplified investing experience',
+        body: 'As a continuously offered evergreen fund, SPRIM provides immediate access to a fully deployed portfolio that is actively managed. The fund provides daily valuations and targeted quarterly liquidity opportunities. The fund is expected to provide a 1099 at the start of the year, avoiding K-1 tax forms commonly required for private equity investments.',
+      },
+      {
+        heading: 'Experienced manager',
+        body: 'SPRIM is managed by StepStone Group, a leading private markets firm with $209 billion in assets under management as of December 31, 2025. The firm reviews more than 4,000 investment opportunities each year on behalf of some of the world\'s largest institutional investors.',
+      },
+    ],
+  },
+  carlyle: {
+    name: 'Carlyle Tactical Private Credit Fund',
+    intro: 'The Carlyle Tactical Private Credit Fund (CTAC) seeks to provide access to the $1.8 trillion private credit universe through a diversified $7 billion portfolio. For investors seeking quarterly income and a core allocation to private credit, CTAC seeks to deliver a comprehensive solution with the simplicity of an evergreen fund structure.',
+    sections: [
+      {
+        heading: 'Opportunistic private credit exposure',
+        body: 'The fund is allocated across direct lending, opportunistic credit, asset-backed finance, and more — seeking to shift with market conditions in pursuit of what Carlyle believes are the most compelling risk-adjusted returns.',
+      },
+      {
+        heading: 'Historical performance through market cycles',
+        body: 'Since its launch in June 2018, CTAC has navigated multiple market environments, including the 2020 pandemic and drawdown in 2022. The fund has made a distribution of income in every quarter since December 2018.',
+      },
+      {
+        heading: 'Simplified investing experience',
+        body: 'As a continuously offered interval fund, CTAC provides immediate access to a live private credit portfolio with no ramp-up period. Investors benefit from daily valuations, expected quarterly liquidity windows, and projected quarterly distributions — all with simplified 1099 tax reporting.',
+      },
+      {
+        heading: 'Experienced credit manager',
+        body: 'CTAC is managed by Carlyle, one of the largest global investment firms with more than three decades of experience and $474 billion in assets under management as of September 30, 2025. Carlyle\'s $208 billion credit platform combines institutional scale, deep industry experience, and long-standing sourcing relationships to identify and execute on opportunities across the private credit spectrum.',
+      },
+    ],
+  },
+  goldman: {
+    name: 'Goldman Sachs Real Estate Diversified Income Fund',
+    intro: 'The Goldman Sachs Real Estate Diversified Income Fund (GSREDIF) provides exposure to a portfolio of real estate totaling $80+ billion in gross asset value. Broadly diversified by sector, geography, and capital position, the fund is designed to serve as a core real estate holding in your portfolio.',
+    sections: [
+      {
+        heading: 'Diversified real estate exposure',
+        body: 'GSREDIF is primarily invested in institutional private real estate equity funds — funds that would otherwise have multi-million-dollar minimum commitments. The portfolio emphasizes multi-family and industrial properties, with additional exposure to secular growth assets like data centers.',
+      },
+      {
+        heading: 'Market opportunity',
+        body: 'We believe the real estate market is showing signs of recovery after a period of significant disruption. Commercial real estate has historically delivered competitive performance following downturns, which this fund may be positioned to potentially capture.',
+      },
+      {
+        heading: 'Simplified investing experience',
+        body: 'As a continuously offered interval fund, GSREDIF provides immediate access to a live, fully deployed portfolio with no ramp-up period. Investors may benefit from daily valuations and targeted quarterly liquidity, all with the simplicity of 1099 tax reporting.',
+      },
+      {
+        heading: 'Experienced management team',
+        body: 'The fund is managed by Goldman Sachs Asset Management, one of the world\'s largest asset managers with over $3 trillion in assets under supervision as of June 30, 2025. GSREDIF draws on the firm\'s 150-year heritage of research, risk management, and sourcing experience.',
+      },
+    ],
+  },
+  clarion: {
+    name: 'Clarion Partners Real Estate Income Fund',
+    intro: 'Clarion Partners Real Estate Income Fund (CPRTX) seeks to provide direct access to a $1.2 billion portfolio of private real estate primarily sourced and managed by Clarion Partners.',
+    sections: [
+      {
+        heading: 'Targeting stable, cash flowing properties',
+        body: 'Clarion seeks to primarily invest in stabilized, income-oriented private real estate. The portfolio is 52% allocated to private real estate equity and 26% to private real estate debt, as of December 31, 2025. The remainder is allocated to publicly listed real estate securities, helping to increase liquidity.',
+      },
+      {
+        heading: 'Portfolio positioning',
+        body: 'The strategy is focused on property sectors that may potentially benefit from durable long-term demand drivers — including industrial warehouses supported by e-commerce growth, as well as residential housing supported by supply shortages.',
+      },
+      {
+        heading: 'Simplified investing experience',
+        body: 'As a continuously offered tender fund, CPRTX provides immediate access to a fully deployed portfolio that is actively managed. Investors may benefit from daily valuations and targeted quarterly liquidity, all with the simplicity of 1099 tax reporting.',
+      },
+      {
+        heading: 'Manager exclusively focused on real estate',
+        body: 'With $73.7 billion in assets under management as of September 30, 2025, Clarion Partners is an investment manager with an exclusive focus on real estate. As part of Franklin Templeton Alternatives, Clarion also has access to the scale and resources of a global asset manager.',
+      },
+    ],
+  },
+};
+
+const highlightsDrawer = document.getElementById('highlightsDrawer');
+
+function openHighlightsDrawer(key) {
+  const data = HIGHLIGHTS_DATA[key];
+  if (!data) return;
+  document.getElementById('hlDrawerTitle').textContent = data.name;
+  document.getElementById('hlDrawerBody').innerHTML =
+    `<p class="hl-intro">${data.intro}</p>` +
+    data.sections.map((s, i) =>
+      `<div class="hl-section">
+        <div class="hl-section-heading"><span class="hl-num">${i + 1}</span>${s.heading}</div>
+        <p class="hl-section-body">${s.body}</p>
+      </div>`
+    ).join('');
+  highlightsDrawer.classList.add('open');
+}
+
+document.getElementById('hlDrawerClose').addEventListener('click', () => highlightsDrawer.classList.remove('open'));
+highlightsDrawer.addEventListener('click', e => { if (e.target === highlightsDrawer) highlightsDrawer.classList.remove('open'); });
+
+document.querySelectorAll('.read-more-btn').forEach(btn => {
+  btn.addEventListener('click', () => openHighlightsDrawer(btn.dataset.highlights));
+});
+
+// ─── Risk disclosure drawer ───────────────────────────────────
+const riskDrawer = document.getElementById('riskDrawer');
+document.getElementById('riskInfoBtn').addEventListener('click', () => riskDrawer.classList.add('open'));
+document.getElementById('riskDrawerClose').addEventListener('click', () => riskDrawer.classList.remove('open'));
+riskDrawer.addEventListener('click', e => { if (e.target === riskDrawer) riskDrawer.classList.remove('open'); });
+
+// ─── Strategic role drawer ───────────────────────────────────
+const strategicRoleDrawer = document.getElementById('strategicRoleDrawer');
+document.getElementById('strategicRoleInfoBtn').addEventListener('click', () => strategicRoleDrawer.classList.add('open'));
+document.getElementById('strategicRoleDrawerClose').addEventListener('click', () => strategicRoleDrawer.classList.remove('open'));
+strategicRoleDrawer.addEventListener('click', e => { if (e.target === strategicRoleDrawer) strategicRoleDrawer.classList.remove('open'); });
+
+// ─── Asset type drawer ────────────────────────────────────────
+const assetTypeDrawer = document.getElementById('assetTypeDrawer');
+document.getElementById('assetTypeInfoBtn').addEventListener('click', () => assetTypeDrawer.classList.add('open'));
+document.getElementById('assetTypeDrawerClose').addEventListener('click', () => assetTypeDrawer.classList.remove('open'));
+assetTypeDrawer.addEventListener('click', e => { if (e.target === assetTypeDrawer) assetTypeDrawer.classList.remove('open'); });
 </script>
 
 </body>
