@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparing Core Evergreen Funds — Willow Wealth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+  <style>
+    /* ─── DESIGN TOKENS ─────────────────────────────────── */
+    :root {
+      --dark-teal:   #002e30;
+      --brand-teal:  #014a4c;
+      --lime:        #dffa46;
+      --mint:        #7cebc6;
+      --white:       #ffffff;
+      --off-white:   #f7faf9;
+      --border:      #dde8e6;
+      --border-dark: rgba(255,255,255,0.1);
+      --text-body:   #1a3535;
+      --text-mid:    #456060;
+      --text-muted:  #7a9898;
+      --positive:    #00875a;
+      --negative:    #c53030;
+      --label-w:     196px;
+      --fund-w:      248px;
+      --radius:      16px;
+    }
+
+    /* ─── RESET ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--white);
+      color: var(--text-body);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ─── HERO ───────────────────────────────────────────── */
+    .hero {
+      background: var(--dark-teal);
+      padding: 52px 28px 44px;
+      color: var(--white);
+    }
+
+    .hero-eyebrow {
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--mint);
+      margin-bottom: 14px;
+    }
+
+    .hero h1 {
+      font-size: clamp(20px, 2.8vw, 32px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    /* ─── TABLE WRAPPER ──────────────────────────────────── */
+    .table-outer {
+      background: var(--off-white);
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: 100vh;
+      /* Smooth mobile scroll */
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* ─── THE TABLE ──────────────────────────────────────── */
+    .ct {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: calc(var(--label-w) + var(--fund-w) * 4);
+      table-layout: fixed;
+    }
+
+    .ct colgroup col:first-child { width: var(--label-w); }
+    .ct colgroup col             { width: var(--fund-w);  }
+
+    /* ─── THEAD ──────────────────────────────────────────── */
+    .ct thead {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .ct thead tr th {
+      background: var(--brand-teal);
+      color: var(--white);
+      text-align: left;
+      padding: 18px 16px 16px;
+      vertical-align: bottom;
+      border-right: 1px solid var(--border-dark);
+      font-weight: 500;
+    }
+    .ct thead tr th:last-child { border-right: none; }
+
+    /* Corner cell */
+    .th-corner {
+      background: var(--dark-teal) !important;
+      border-right: 1px solid rgba(255,255,255,0.06) !important;
+    }
+
+    .fund-name {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .fund-pills {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .pill-symbol {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--mint);
+      background: rgba(124,235,198,0.13);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .pill-class {
+      font-size: 10px;
+      color: rgba(255,255,255,0.45);
+      font-weight: 400;
+    }
+
+    /* ─── TBODY ──────────────────────────────────────────── */
+    .ct tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.1s;
+    }
+    .ct tbody tr:last-child { border-bottom: none; }
+
+    .ct tbody tr:hover:not(.section-hdr):not(.divider) {
+      background: rgba(1,74,76,0.035);
+    }
+    .ct tbody tr:hover:not(.section-hdr):not(.divider) .row-label {
+      background: #eef4f3;
+    }
+
+    /* Row label (sticky left col) */
+    .row-label {
+      position: sticky;
+      left: 0;
+      z-index: 10;
+      background: var(--white);
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--text-mid);
+      padding: 11px 14px 11px 16px;
+      border-right: 1px solid var(--border);
+      vertical-align: top;
+      text-align: left;
+      white-space: nowrap;
+      transition: background 0.1s;
+    }
+
+    /* Data cells */
+    .ct tbody td {
+      padding: 11px 16px;
+      font-size: 13px;
+      color: var(--text-body);
+      vertical-align: top;
+      border-right: 1px solid var(--border);
+    }
+    .ct tbody td:last-child { border-right: none; }
+
+    /* ─── SECTION HEADERS ────────────────────────────────── */
+    .section-hdr {
+      background: var(--dark-teal);
+    }
+
+    .section-hdr td {
+      background: var(--dark-teal);
+      color: var(--white) !important;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 7px 16px;
+      border-right: none !important;
+      border-bottom: none;
+    }
+
+    /* ─── DIVIDER ROWS ───────────────────────────────────── */
+    .divider td {
+      height: 3px;
+      padding: 0;
+      background: var(--border) !important;
+      border-right: none !important;
+    }
+
+    /* ─── RISK DOTS ──────────────────────────────────────── */
+    .dots {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      border: 1.5px solid var(--brand-teal);
+      background: transparent;
+      flex-shrink: 0;
+    }
+    .dot.on { background: var(--brand-teal); }
+
+    /* ─── ASSET BADGES ───────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 5px;
+    }
+    .badge-pe   { background: #e4eeff; color: #1a5faa; }
+    .badge-pc   { background: #fff4e6; color: #b05a00; }
+    .badge-re   { background: #e8f5ef; color: #166534; }
+
+    /* ─── PERFORMANCE ────────────────────────────────────── */
+    .num {
+      font-variant-numeric: tabular-nums;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .pos  { color: var(--positive); }
+    .neg  { color: var(--negative); }
+    .na   { color: var(--text-muted); font-weight: 400; }
+    .neut { color: var(--text-body); }
+
+    /* ─── BREAKDOWN LISTS (Strategies / Sector) ─────────── */
+    .breakdown {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .breakdown li {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .bk-label {
+      font-size: 12px;
+      color: var(--text-mid);
+      flex: 1;
+      min-width: 0;
+    }
+
+    .bk-val {
+      font-size: 12px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-body);
+      white-space: nowrap;
+    }
+
+    /* Rows containing breakdowns should align to top */
+    .row-breakdown td,
+    .row-breakdown .row-label {
+      vertical-align: top;
+      padding-top: 13px;
+      padding-bottom: 13px;
+    }
+
+    /* ─── WHY WE LIKE TAGS ───────────────────────────────── */
+    .why-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--brand-teal);
+      background: rgba(1,74,76,0.07);
+      padding: 4px 10px 4px 8px;
+      border-radius: 20px;
+      line-height: 1.35;
+    }
+    .why-tag::before {
+      content: '';
+      display: block;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--mint);
+      flex-shrink: 0;
+    }
+
+    /* ─── TFOOT / CTA ROW ────────────────────────────────── */
+    .cta-row td {
+      background: var(--dark-teal) !important;
+      padding: 14px 16px;
+      border-top: 2px solid var(--brand-teal);
+      border-right: 1px solid rgba(255,255,255,0.07) !important;
+      vertical-align: top;
+    }
+    .cta-row td:last-child { border-right: none !important; }
+
+    .cta-row .row-label {
+      background: var(--dark-teal) !important;
+      border-right: 1px solid rgba(255,255,255,0.07) !important;
+    }
+
+    .cta-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .btn-primary {
+      display: block;
+      background: var(--lime);
+      color: var(--dark-teal);
+      font-size: 11.5px;
+      font-weight: 700;
+      text-align: center;
+      padding: 9px 14px;
+      border-radius: 8px;
+      letter-spacing: 0.01em;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn-primary:hover { opacity: 0.87; transform: translateY(-1px); }
+
+    .btn-ghost {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.55);
+      text-align: center;
+      padding: 3px 0;
+      transition: color 0.15s;
+    }
+    .btn-ghost:hover { color: rgba(255,255,255,0.9); }
+
+    /* ─── CHART TRIGGER CELL ────────────────────────────── */
+    .chart-trigger {
+      cursor: pointer;
+    }
+    .chart-trigger:hover {
+      background: rgba(1,74,76,0.04);
+    }
+
+    /* ─── MODAL ──────────────────────────────────────────── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,18,20,0.5);
+      z-index: 600;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(2px);
+    }
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 36px 36px 32px;
+      width: 560px;
+      max-width: calc(100vw - 32px);
+      position: relative;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.22);
+    }
+
+    .modal-header {
+      margin-bottom: 28px;
+      padding-right: 32px;
+    }
+    .modal-eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dark-teal);
+      line-height: 1.2;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 16px;
+      line-height: 1;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .modal-close:hover {
+      border-color: var(--brand-teal);
+      color: var(--brand-teal);
+    }
+
+    .modal-chart-wrap {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .modal-donut {
+      flex-shrink: 0;
+      width: 180px;
+      height: 180px;
+    }
+
+    .modal-legend {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .legend-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .legend-text {
+      flex: 1;
+      font-size: 12px;
+      color: var(--text-mid);
+      line-height: 1.3;
+    }
+    .legend-pct {
+      font-size: 13px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--dark-teal);
+    }
+
+    /* ─── VIEW ALL LINK ─────────────────────────────────── */
+    .view-all-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 7px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--brand-teal);
+      opacity: 0.75;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: inherit;
+      transition: opacity 0.15s;
+    }
+    .view-all-btn:hover { opacity: 1; }
+
+    /* ─── GROWTH CHART LINK ROW ─────────────────────────── */
+    .chart-link-row td {
+      padding: 6px 16px 8px;
+      border-bottom: none;
+      background: rgba(1,74,76,0.03);
+    }
+    .chart-link-row .row-label {
+      background: rgba(1,74,76,0.03);
+      border-right-color: var(--border);
+    }
+    .growth-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--brand-teal);
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      font-family: inherit;
+      opacity: 0.7;
+      transition: opacity 0.15s;
+    }
+    .growth-link:hover { opacity: 1; }
+
+    /* ─── GROWTH DRAWER ──────────────────────────────────── */
+    .drawer-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,18,20,0.45);
+      z-index: 600;
+      justify-content: flex-end;
+      backdrop-filter: blur(2px);
+    }
+    .drawer-backdrop.open { display: flex; }
+
+    .drawer {
+      background: var(--white);
+      width: min(660px, 100vw);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: -8px 0 40px rgba(0,0,0,0.15);
+    }
+    .drawer-backdrop.open .drawer {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 28px 28px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .drawer-eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .drawer-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--dark-teal);
+      line-height: 1.2;
+    }
+    .drawer-close {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-left: 16px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .drawer-close:hover { border-color: var(--brand-teal); color: var(--brand-teal); }
+
+    .drawer-stats {
+      display: flex;
+      gap: 0;
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .drawer-stat {
+      flex: 1;
+      padding: 14px 20px;
+      border-right: 1px solid var(--border);
+    }
+    .drawer-stat:last-child { border-right: none; }
+    .drawer-stat-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .drawer-stat-val {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--dark-teal);
+      font-variant-numeric: tabular-nums;
+    }
+    .drawer-stat-val.pos { color: var(--positive); }
+    .drawer-stat-val.neg { color: var(--negative); }
+
+    .drawer-body {
+      flex: 1;
+      padding: 24px 28px 28px;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .drawer-chart-wrap {
+      flex: 1;
+      position: relative;
+      min-height: 0;
+    }
+
+    /* ─── SCROLL HINT (mobile) ───────────────────────────── */
+    .scroll-hint {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      background: var(--brand-teal);
+      color: rgba(255,255,255,0.65);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 8px 16px;
+    }
+    .scroll-hint svg { flex-shrink: 0; }
+
+    @media (max-width: 860px) {
+      .scroll-hint { display: flex; }
+    }
+
+    /* ─── RESPONSIVE TWEAKS ──────────────────────────────── */
+    @media (max-width: 600px) {
+      .hero { padding: 36px 16px 32px; }
+      :root { --label-w: 140px; --fund-w: 180px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HERO ════════════════════════════════════════════════ -->
+<section class="hero">
+  <p class="hero-eyebrow">Evergreen funds</p>
+  <h1>Comparing core evergreen funds</h1>
+</section>
+
+<!-- ═══ SCROLL HINT (mobile only) ══════════════════════════ -->
+<div class="scroll-hint" aria-hidden="true">
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  Scroll to compare all funds
+</div>
+
+<!-- ═══ COMPARISON TABLE ════════════════════════════════════ -->
+<div class="table-outer">
+  <div class="table-scroll" id="tableScroll">
+    <table class="ct" role="table" aria-label="Evergreen fund comparison">
+      <colgroup>
+        <col><!-- label -->
+        <col><!-- StepStone -->
+        <col><!-- Carlyle -->
+        <col><!-- Goldman Sachs -->
+        <col><!-- Clarion -->
+      </colgroup>
+
+      <!-- ─── STICKY HEADER ─────────────────────────────── -->
+      <thead>
+        <tr>
+          <th class="th-corner" aria-label="Row labels"></th>
+
+          <th scope="col">
+            <span class="fund-name">StepStone Private Markets Fund</span>
+            <div class="fund-pills">
+              <span class="pill-symbol">XPMSX</span>
+              <span class="pill-class">Class S</span>
+            </div>
+          </th>
+
+          <th scope="col">
+            <span class="fund-name">Carlyle Tactical Private Credit Fund</span>
+            <div class="fund-pills">
+              <span class="pill-symbol">TAKAX</span>
+              <span class="pill-class">Class A</span>
+            </div>
+          </th>
+
+          <th scope="col">
+            <span class="fund-name">Goldman Sachs Real Estate Diversified Income Fund</span>
+            <div class="fund-pills">
+              <span class="pill-symbol">GSRJX</span>
+              <span class="pill-class">Class L</span>
+            </div>
+          </th>
+
+          <th scope="col">
+            <span class="fund-name">Clarion Partners Real Estate Income Fund</span>
+            <div class="fund-pills">
+              <span class="pill-symbol">CPRTX</span>
+              <span class="pill-class">Class T</span>
+            </div>
+          </th>
+        </tr>
+      </thead>
+
+      <!-- ─── TABLE BODY ─────────────────────────────────── -->
+      <tbody>
+
+        <!-- OVERVIEW rows (no section label, just data) -->
+        <tr>
+          <th scope="row" class="row-label">Strategic role</th>
+          <td>Core</td>
+          <td>Core</td>
+          <td>Core</td>
+          <td>Core</td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Asset type</th>
+          <td>Equity</td>
+          <td>Credit</td>
+          <td>Equity</td>
+          <td>Equity</td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Asset class</th>
+          <td><span class="badge badge-pe">Private Equity</span></td>
+          <td><span class="badge badge-pc">Private Credit</span></td>
+          <td><span class="badge badge-re">Real Estate</span></td>
+          <td><span class="badge badge-re">Real Estate</span></td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Risk rating</th>
+          <td>
+            <div class="dots" title="2 of 4">
+              <span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+          </td>
+          <td>
+            <div class="dots" title="1 of 4">
+              <span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+          </td>
+          <td>
+            <div class="dots" title="2 of 4">
+              <span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+          </td>
+          <td>
+            <div class="dots" title="2 of 4">
+              <span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Structure</th>
+          <td>Tender offer fund</td>
+          <td>Interval fund</td>
+          <td>Interval fund</td>
+          <td>Interval fund</td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Inception date</th>
+          <td>Oct 1, 2020</td>
+          <td>Jun 4, 2018</td>
+          <td>Jul 10, 2017</td>
+          <td>Sep 27, 2019</td>
+        </tr>
+
+        <!-- ─── WHY WE LIKE ─── -->
+        <tr class="section-hdr">
+          <td colspan="5">Why we like</td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label" style="color:var(--text-muted);font-weight:400">1</th>
+          <td><span class="why-tag">Broad private equity exposure</span></td>
+          <td><span class="why-tag">Tactical asset allocation</span></td>
+          <td><span class="why-tag">Capture the next wave of CRE growth</span></td>
+          <td><span class="why-tag">Directly originated</span></td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label" style="color:var(--text-muted);font-weight:400">2</th>
+          <td><span class="why-tag">Focus on seasoned investments</span></td>
+          <td><span class="why-tag">Diversification across strategies</span></td>
+          <td><span class="why-tag">Fund of funds</span></td>
+          <td><span class="why-tag">Equity and debt</span></td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label" style="color:var(--text-muted);font-weight:400">3</th>
+          <td><span class="why-tag">Seasoned manager</span></td>
+          <td><span class="why-tag">Directly originated</span></td>
+          <td><span class="why-tag">Equity and debt</span></td>
+          <td><span class="why-tag" style="opacity:0.6">TBD</span></td>
+        </tr>
+
+        <!-- PORTFOLIO HOLDINGS -->
+        <tr class="section-hdr">
+          <td colspan="5">Portfolio holdings</td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">AUM</th>
+          <td>$5.3B</td>
+          <td>$6.1B</td>
+          <td>$314.1M<br><span style="font-size:11px;color:var(--text-muted);font-weight:400">$80T Gross Asset Value</span></td>
+          <td>$1.31B</td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Investments</th>
+          <td>3,000+ portfolio companies</td>
+          <td>900+ investments</td>
+          <td><span class="na">—</span></td>
+          <td><span class="na">—</span></td>
+        </tr>
+
+        <tr class="row-breakdown">
+          <th scope="row" class="row-label">Strategies</th>
+          <td class="chart-trigger" data-chart="stepstone-strategies">
+            <ul class="breakdown">
+              <li><span class="bk-label">Secondary investment funds</span><span class="bk-val">79%</span></li>
+              <li><span class="bk-label">Co-investments</span><span class="bk-val">20%</span></li>
+              <li><span class="bk-label">Primary investment funds</span><span class="bk-val">1%</span></li>
+            </ul>
+          </td>
+          <td class="chart-trigger" data-chart="carlyle-strategies">
+            <ul class="breakdown">
+              <li><span class="bk-label">Direct Lending</span><span class="bk-val">41%</span></li>
+              <li><span class="bk-label">Opportunistic Credit</span><span class="bk-val">19%</span></li>
+              <li><span class="bk-label">Structured Credit</span><span class="bk-val">15%</span></li>
+              <li><span class="bk-label">Liquid Credit</span><span class="bk-val">15%</span></li>
+              <li><span class="bk-label">Asset-Backed Finance</span><span class="bk-val">6%</span></li>
+            </ul>
+            <button class="view-all-btn">+1 more ↗</button>
+          </td>
+          <td><span class="na">—</span></td>
+          <td class="chart-trigger" data-chart="clarion-strategies">
+            <ul class="breakdown">
+              <li><span class="bk-label">Private Real Estate Equity</span><span class="bk-val">57%</span></li>
+              <li><span class="bk-label">Private Real Estate Debt</span><span class="bk-val">23%</span></li>
+              <li><span class="bk-label">Publicly-Traded Real Estate Securities</span><span class="bk-val">20%</span></li>
+            </ul>
+          </td>
+        </tr>
+
+        <tr class="row-breakdown">
+          <th scope="row" class="row-label">Sector</th>
+          <td class="chart-trigger" data-chart="stepstone-sector">
+            <ul class="breakdown">
+              <li><span class="bk-label">Information Technology</span><span class="bk-val">19%</span></li>
+              <li><span class="bk-label">Financials</span><span class="bk-val">12%</span></li>
+              <li><span class="bk-label">Industrials</span><span class="bk-val">12%</span></li>
+              <li><span class="bk-label">Health Care</span><span class="bk-val">11%</span></li>
+              <li><span class="bk-label">Consumer Discretionary</span><span class="bk-val">9%</span></li>
+            </ul>
+            <button class="view-all-btn">+2 more ↗</button>
+          </td>
+          <td class="chart-trigger" data-chart="carlyle-sector">
+            <ul class="breakdown">
+              <li><span class="bk-label">Software</span><span class="bk-val">13%</span></li>
+              <li><span class="bk-label">Financial Services</span><span class="bk-val">8%</span></li>
+              <li><span class="bk-label">Healthcare</span><span class="bk-val">8%</span></li>
+              <li><span class="bk-label">Diversified Investment Vehicles</span><span class="bk-val">5%</span></li>
+              <li><span class="bk-label">Hotels, Restaurants &amp; Leisure</span><span class="bk-val">5%</span></li>
+            </ul>
+            <button class="view-all-btn">+5 more ↗</button>
+          </td>
+          <td><span class="na">—</span></td>
+          <td class="chart-trigger" data-chart="clarion-sector">
+            <ul class="breakdown">
+              <li><span class="bk-label">Industrial</span><span class="bk-val">40%</span></li>
+              <li><span class="bk-label">Residential</span><span class="bk-val">31%</span></li>
+              <li><span class="bk-label">Health Care</span><span class="bk-val">20%</span></li>
+              <li><span class="bk-label">Office</span><span class="bk-val">4%</span></li>
+              <li><span class="bk-label">Mixed-Use</span><span class="bk-val">4%</span></li>
+            </ul>
+            <button class="view-all-btn">+1 more ↗</button>
+          </td>
+        </tr>
+
+        <!-- ─── PERFORMANCE ─── -->
+        <tr class="section-hdr">
+          <td colspan="5">Performance</td>
+        </tr>
+
+        <tr class="chart-link-row">
+          <td class="row-label"></td>
+          <td><button class="growth-link" data-growth="stepstone">Growth of $100K ↗</button></td>
+          <td><button class="growth-link" data-growth="carlyle">Growth of $100K ↗</button></td>
+          <td><button class="growth-link" data-growth="goldman">Growth of $100K ↗</button></td>
+          <td><button class="growth-link" data-growth="clarion">Growth of $100K ↗</button></td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">1-year</th>
+          <td><span class="num pos">+10.79%</span></td>
+          <td><span class="num pos">+3.58%</span></td>
+          <td><span class="num neg">−2.49%</span></td>
+          <td><span class="num pos">+4.21%</span></td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">3-years</th>
+          <td><span class="num pos">+10.07%</span></td>
+          <td><span class="num pos">+8.24%</span></td>
+          <td><span class="num neg">−2.09%</span></td>
+          <td><span class="num pos">+3.35%</span></td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">5-years</th>
+          <td><span class="num pos">+14.06%</span></td>
+          <td><span class="num pos">+6.71%</span></td>
+          <td><span class="num pos">+0.25%</span></td>
+          <td><span class="num pos">+7.43%</span></td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Since inception</th>
+          <td><span class="num pos">+18.38%</span></td>
+          <td><span class="na">—</span></td>
+          <td><span class="num pos">+2.40%</span></td>
+          <td><span class="num pos">+7.37%</span></td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Yield</th>
+          <td><span class="na">—</span></td>
+          <td><span class="num neut">6.52%</span></td>
+          <td><span class="num neut">5.97%</span></td>
+          <td><span class="num neut">6.38%</span></td>
+        </tr>
+
+        <!-- LIQUIDITY, DISTRIBUTIONS & TAXES -->
+        <tr class="section-hdr">
+          <td colspan="5">Liquidity, distributions &amp; taxes</td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Distribution schedule</th>
+          <td>Annual</td>
+          <td>Monthly</td>
+          <td>Quarterly</td>
+          <td>Monthly</td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Liquidity schedule</th>
+          <td>Quarterly</td>
+          <td>Quarterly</td>
+          <td>Quarterly</td>
+          <td>Quarterly</td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Tax form</th>
+          <td>1099</td>
+          <td>1099</td>
+          <td>1099</td>
+          <td>1099</td>
+        </tr>
+
+        <!-- ─── MANAGER ─── -->
+        <tr class="section-hdr">
+          <td colspan="5">Manager</td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Manager</th>
+          <td>StepStone Group</td>
+          <td>Carlyle Group</td>
+          <td>Goldman Sachs Asset Management</td>
+          <td>Clarion Partners</td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Manager AUM</th>
+          <td><span class="na">—</span></td>
+          <td><span class="na">—</span></td>
+          <td><span class="na">—</span></td>
+          <td><span class="na">—</span></td>
+        </tr>
+
+        <!-- ─── FEES & EXPENSES ─── -->
+        <tr class="section-hdr">
+          <td colspan="5">Fees &amp; expenses</td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Gross annual expenses</th>
+          <td>3.19%</td>
+          <td>5.80%</td>
+          <td>2.38%</td>
+          <td>2.52%</td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Adjusted annual expenses</th>
+          <td>3.06%</td>
+          <td>3.72%</td>
+          <td>2.28%</td>
+          <td>3.59%</td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Commitment fee</th>
+          <td>3.50%</td>
+          <td>3.00%</td>
+          <td>4.25%</td>
+          <td>3.00%</td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="row-label">Minimum investment</th>
+          <td>$10K</td>
+          <td>$10K</td>
+          <td>$10K</td>
+          <td>$10K</td>
+        </tr>
+
+      </tbody>
+
+      <!-- ─── STICKY FOOTER / CTA ROW ───────────────────── -->
+      <tfoot>
+        <tr class="cta-row">
+          <td class="row-label"></td>
+
+          <td>
+            <div class="cta-stack">
+              <a href="#" class="btn-primary">Invest now</a>
+              <a href="#" class="btn-ghost">View offering page</a>
+              <a href="#" class="btn-ghost">Download prospectus</a>
+            </div>
+          </td>
+
+          <td>
+            <div class="cta-stack">
+              <a href="#" class="btn-primary">Invest now</a>
+              <a href="#" class="btn-ghost">View offering page</a>
+              <a href="#" class="btn-ghost">Download prospectus</a>
+            </div>
+          </td>
+
+          <td>
+            <div class="cta-stack">
+              <a href="#" class="btn-primary">Invest now</a>
+              <a href="#" class="btn-ghost">View offering page</a>
+              <a href="#" class="btn-ghost">Download prospectus</a>
+            </div>
+          </td>
+
+          <td>
+            <div class="cta-stack">
+              <a href="#" class="btn-primary">Invest now</a>
+              <a href="#" class="btn-ghost">View offering page</a>
+              <a href="#" class="btn-ghost">Download prospectus</a>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+
+    </table>
+  </div><!-- /table-scroll -->
+</div><!-- /table-outer -->
+
+
+<!-- ═══ GROWTH DRAWER ═══════════════════════════════════════ -->
+<div class="drawer-backdrop" id="growthDrawer">
+  <div class="drawer">
+    <div class="drawer-header">
+      <div>
+        <p class="drawer-eyebrow">Growth of $100,000 initial investment</p>
+        <h3 class="drawer-title" id="drawerTitle"></h3>
+      </div>
+      <button class="drawer-close" id="drawerClose">&#215;</button>
+    </div>
+    <div class="drawer-stats" id="drawerStats"></div>
+    <div class="drawer-body">
+      <div class="drawer-chart-wrap">
+        <canvas id="growthChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ GENERIC CHART MODAL ══════════════════════════════════ -->
+<div class="modal-backdrop" id="chartModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <button class="modal-close" aria-label="Close">&#215;</button>
+    <div class="modal-header">
+      <div class="modal-eyebrow" id="modalEyebrow"></div>
+      <div class="modal-title" id="modalTitle"></div>
+    </div>
+    <div class="modal-chart-wrap">
+      <svg class="modal-donut" id="modalDonut" viewBox="0 0 140 140" aria-hidden="true"></svg>
+      <ul class="modal-legend" id="modalLegend"></ul>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ─── Chart data ──────────────────────────────────────────
+  const PALETTE = [
+    '#014a4c', '#1a7a68', '#7cebc6', '#dffa46',
+    '#4a9d8f', '#b8e8da', '#9bcfc2', '#f0f9b8',
+    '#6bb8a6', '#c8f0e4', '#c8d0ce'
+  ];
+
+  const CHARTS = {
+    'stepstone-strategies': {
+      fund: 'StepStone Private Markets Fund',
+      title: 'Strategy allocation',
+      items: [
+        { label: 'Secondary investment funds', pct: 79 },
+        { label: 'Co-investments',             pct: 20 },
+        { label: 'Primary investment funds',   pct: 1  },
+      ]
+    },
+    'carlyle-strategies': {
+      fund: 'Carlyle Tactical Private Credit Fund',
+      title: 'Strategy allocation',
+      items: [
+        { label: 'Direct Lending',        pct: 41 },
+        { label: 'Opportunistic Credit',  pct: 19 },
+        { label: 'Structured Credit',     pct: 15 },
+        { label: 'Liquid Credit',         pct: 15 },
+        { label: 'Asset-Backed Finance',  pct: 6  },
+        { label: 'Real Assets Credit',    pct: 4  },
+      ]
+    },
+    'carlyle-sector': {
+      fund: 'Carlyle Tactical Private Credit Fund',
+      title: 'Sector allocation',
+      items: [
+        { label: 'Software',                               pct: 13 },
+        { label: 'Financial Services',                     pct: 8  },
+        { label: 'Healthcare',                             pct: 8  },
+        { label: 'Diversified Investment Vehicles',        pct: 5  },
+        { label: 'Hotels, Restaurants & Leisure',          pct: 5  },
+        { label: 'Consumer Services',                      pct: 5  },
+        { label: 'Professional Services',                  pct: 4  },
+        { label: 'Commercial Services & Supplies',         pct: 3  },
+        { label: 'Electronics',                            pct: 3  },
+        { label: 'Real Estate Mgmt & Development',         pct: 3  },
+      ]
+    },
+    'stepstone-sector': {
+      fund: 'StepStone Private Markets Fund',
+      title: 'Sector allocation',
+      items: [
+        { label: 'Information Technology',   pct: 19 },
+        { label: 'Financials',               pct: 12 },
+        { label: 'Industrials',              pct: 12 },
+        { label: 'Health Care',              pct: 11 },
+        { label: 'Consumer Discretionary',   pct: 9  },
+        { label: 'Communication Services',   pct: 7  },
+        { label: 'Other',                    pct: 5  },
+      ]
+    },
+    'clarion-strategies': {
+      fund: 'Clarion Partners Real Estate Income Fund',
+      title: 'Strategy allocation',
+      items: [
+        { label: 'Private Real Estate Equity',                 pct: 57 },
+        { label: 'Private Real Estate Debt',                   pct: 23 },
+        { label: 'Publicly-Traded Real Estate Securities',     pct: 20 },
+      ]
+    },
+    'clarion-sector': {
+      fund: 'Clarion Partners Real Estate Income Fund',
+      title: 'Sector allocation',
+      items: [
+        { label: 'Industrial',        pct: 40 },
+        { label: 'Residential',       pct: 31 },
+        { label: 'Health Care',       pct: 20 },
+        { label: 'Office',            pct: 4  },
+        { label: 'Mixed-Use',         pct: 4  },
+        { label: 'Necessity Retail',  pct: 2  },
+      ]
+    }
+  };
+
+  // ─── Donut renderer ──────────────────────────────────────
+  function renderDonut(svgEl, items) {
+    const r = 54, cx = 70, cy = 70, sw = 18;
+    const C = 2 * Math.PI * r;
+    let html = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#f0f5f4" stroke-width="${sw}"/>`;
+    let cumPct = 0;
+    items.forEach((item, i) => {
+      const len = (item.pct / 100) * C;
+      const gap = C - len;
+      const rot = -90 + cumPct * 3.6;
+      html += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${PALETTE[i]}"
+        stroke-width="${sw}" stroke-dasharray="${len.toFixed(2)} ${gap.toFixed(2)}"
+        stroke-linecap="butt" transform="rotate(${rot}, ${cx}, ${cy})"/>`;
+      cumPct += item.pct;
+    });
+    svgEl.innerHTML = html;
+  }
+
+  // ─── Legend renderer ─────────────────────────────────────
+  function renderLegend(ulEl, items) {
+    ulEl.innerHTML = items.map((item, i) => `
+      <li class="legend-row">
+        <span class="legend-swatch" style="background:${PALETTE[i]}"></span>
+        <span class="legend-text">${item.label}</span>
+        <span class="legend-pct">${item.pct}%</span>
+      </li>`).join('');
+  }
+
+  // ─── Open modal ──────────────────────────────────────────
+  function openChart(key) {
+    const data = CHARTS[key];
+    if (!data) return;
+    document.getElementById('modalEyebrow').textContent = data.fund;
+    document.getElementById('modalTitle').textContent   = data.title;
+    renderDonut(document.getElementById('modalDonut'), data.items);
+    renderLegend(document.getElementById('modalLegend'), data.items);
+    document.getElementById('chartModal').classList.add('open');
+  }
+
+  // ─── Trigger clicks (cell or view-all button) ────────────
+  document.querySelectorAll('.chart-trigger').forEach(cell => {
+    cell.addEventListener('click', e => {
+      // Don't double-fire if the click was on the button inside
+      openChart(cell.dataset.chart);
+    });
+  });
+
+  // ─── Close ───────────────────────────────────────────────
+  const backdrop = document.getElementById('chartModal');
+  backdrop.addEventListener('click', e => { if (e.target === backdrop) backdrop.classList.remove('open'); });
+  backdrop.querySelector('.modal-close').addEventListener('click', () => backdrop.classList.remove('open'));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') backdrop.classList.remove('open');
+  });
+</script>
+
+<script>
+// ═══ GROWTH OF $100K CHARTS ══════════════════════════════════
+// PLACEHOLDER DATA — replace labels/values with real CSV data
+
+const GROWTH_DATA = {
+  stepstone: {
+    fund: 'StepStone Private Markets Fund',
+    inception: 'Oct 2020',
+    stats: [
+      { label: '1-year',        val: '+10.79%', cls: 'pos' },
+      { label: '3-years',       val: '+10.07%', cls: 'pos' },
+      { label: 'Since inception', val: '+18.38%', cls: 'pos' },
+    ],
+    // PLACEHOLDER — paste real monthly data here
+    labels: ['Oct 2020','Jan 2021','Apr 2021','Jul 2021','Oct 2021','Jan 2022','Apr 2022','Jul 2022','Oct 2022','Jan 2023','Apr 2023','Jul 2023','Oct 2023','Jan 2024','Apr 2024','Jul 2024','Oct 2024'],
+    values: [100000,103200,107100,111400,116000,119500,122800,124200,126700,130900,135600,140800,146200,152100,158400,163900,118380],
+  },
+  carlyle: {
+    fund: 'Carlyle Tactical Private Credit Fund',
+    inception: 'Jul 2018',
+    stats: [
+      { label: '1-year',        val: '+3.58%',  cls: 'pos' },
+      { label: '3-years',       val: '+8.24%',  cls: 'pos' },
+      { label: 'Since inception', val: '—',     cls: '' },
+    ],
+    labels: ['Jul 2018','Aug 2018','Sep 2018','Oct 2018','Nov 2018','Dec 2018','Jan 2019','Feb 2019','Mar 2019','Apr 2019','May 2019','Jun 2019','Jul 2019','Aug 2019','Sep 2019','Oct 2019','Nov 2019','Dec 2019','Jan 2020','Feb 2020','Mar 2020','Apr 2020','May 2020','Jun 2020','Jul 2020','Aug 2020','Sep 2020','Oct 2020','Nov 2020','Dec 2020','Jan 2021','Feb 2021','Mar 2021','Apr 2021','May 2021','Jun 2021','Jul 2021','Aug 2021','Sep 2021','Oct 2021','Nov 2021','Dec 2021','Jan 2022','Feb 2022','Mar 2022','Apr 2022','May 2022','Jun 2022','Jul 2022','Aug 2022','Sep 2022','Oct 2022','Nov 2022','Dec 2022','Jan 2023','Feb 2023','Mar 2023','Apr 2023','May 2023','Jun 2023','Jul 2023','Aug 2023','Sep 2023','Oct 2023','Nov 2023','Dec 2023','Jan 2024','Feb 2024','Mar 2024','Apr 2024','May 2024','Jun 2024','Jul 2024','Aug 2024','Sep 2024','Oct 2024','Nov 2024','Dec 2024','Jan 2025','Feb 2025','Mar 2025','Apr 2025','May 2025','Jun 2025','Jul 2025','Aug 2025','Sep 2025','Oct 2025','Nov 2025','Dec 2025'],
+    values: [100000,100000,100500,100600,100400,98200,99300,100300,100700,101900,102300,102400,102600,101800,101200,99700,100300,102600,103500,102500,87000,85600,90000,94500,95600,95600,97900,98200,100700,103800,104900,105900,107500,108100,108700,110900,111000,111000,113100,113000,112700,115000,114900,114100,115100,115400,111900,109900,111300,113400,111100,111000,112800,113400,116800,117500,117300,118700,119000,120500,122900,124400,125400,125400,127100,129100,130600,131700,133000,134000,135500,136400,137500,138200,139500,140500,141600,142300,143600,144200,143600,143400,145000,146200,147400,148400,149300,149700,150000,150600],
+  },
+  goldman: {
+    fund: 'Goldman Sachs Real Estate Diversified Income Fund',
+    inception: 'Aug 2017',
+    stats: [
+      { label: '1-year',        val: '−2.49%',  cls: 'neg' },
+      { label: '3-years',       val: '−2.09%',  cls: 'neg' },
+      { label: 'Since inception', val: '+2.40%', cls: 'pos' },
+    ],
+    labels: ['Aug 2017','Sep 2017','Oct 2017','Nov 2017','Dec 2017','Jan 2018','Feb 2018','Mar 2018','Apr 2018','May 2018','Jun 2018','Jul 2018','Aug 2018','Sep 2018','Oct 2018','Nov 2018','Dec 2018','Jan 2019','Feb 2019','Mar 2019','Apr 2019','May 2019','Jun 2019','Jul 2019','Aug 2019','Sep 2019','Oct 2019','Nov 2019','Dec 2019','Jan 2020','Feb 2020','Mar 2020','Apr 2020','May 2020','Jun 2020','Jul 2020','Aug 2020','Sep 2020','Oct 2020','Nov 2020','Dec 2020','Jan 2021','Feb 2021','Mar 2021','Apr 2021','May 2021','Jun 2021','Jul 2021','Aug 2021','Sep 2021','Oct 2021','Nov 2021','Dec 2021','Jan 2022','Feb 2022','Mar 2022','Apr 2022','May 2022','Jun 2022','Jul 2022','Aug 2022','Sep 2022','Oct 2022','Nov 2022','Dec 2022','Jan 2023','Feb 2023','Mar 2023','Apr 2023','May 2023','Jun 2023','Jul 2023','Aug 2023','Sep 2023','Oct 2023','Nov 2023','Dec 2023','Jan 2024','Feb 2024','Mar 2024','Apr 2024','May 2024','Jun 2024','Jul 2024','Aug 2024','Sep 2024','Oct 2024','Nov 2024','Dec 2024','Jan 2025','Feb 2025','Mar 2025','Apr 2025','May 2025','Jun 2025','Jul 2025','Aug 2025','Sep 2025','Oct 2025','Nov 2025','Dec 2025'],
+    values: [100000,101612,101412,101212,102658,100728,99713,101170,103446,107066,107821,108870,110548,111009,110265,110052,107549,112619,113482,113962,114837,114728,116189,117408,117630,119664,120451,120338,121280,122546,120245,107444,112939,112588,112830,113423,114135,113112,113955,116967,118341,119075,120664,122791,125271,126015,127794,131442,133454,133391,135049,134667,138865,137430,136516,140080,139948,141403,138011,144851,142973,134955,138764,140125,136347,139676,136763,132496,133763,131651,135236,134807,133520,127826,126955,131458,135291,129095,126587,127429,122326,125028,126155,129210,131042,130029,129097,129873,128087,127454,128719,127539,126573,125768,125371,124879,126027,125621,124277,124116,124699],
+  },
+  clarion: {
+    fund: 'Clarion Partners Real Estate Income Fund',
+    inception: 'Sep 2019',
+    stats: [
+      { label: '1-year',        val: '+4.21%',  cls: 'pos' },
+      { label: '3-years',       val: '+3.35%',  cls: 'pos' },
+      { label: 'Since inception', val: '+7.37%', cls: 'pos' },
+    ],
+    labels: ['Sep 2019','Dec 2019','Mar 2020','Jun 2020','Sep 2020','Dec 2020','Mar 2021','Jun 2021','Sep 2021','Dec 2021','Mar 2022','Jun 2022','Sep 2022','Dec 2022','Mar 2023','Jun 2023','Sep 2023','Dec 2023','Mar 2024','Jun 2024','Sep 2024'],
+    values: [100000,101800,99200,97600,100400,103100,106200,109500,113000,116600,119400,118200,115600,114200,115800,117400,119200,121000,122800,124600,107371],
+  },
+};
+
+// ─── Chart instance (destroyed/recreated on each open) ───────
+let growthChartInstance = null;
+
+function openGrowthDrawer(key) {
+  const data = GROWTH_DATA[key];
+  if (!data) return;
+
+  // Title
+  document.getElementById('drawerTitle').textContent = data.fund;
+
+  // Stats strip
+  document.getElementById('drawerStats').innerHTML = data.stats.map(s => `
+    <div class="drawer-stat">
+      <div class="drawer-stat-label">${s.label}</div>
+      <div class="drawer-stat-val ${s.cls}">${s.val}</div>
+    </div>`).join('');
+
+  // Destroy previous chart
+  if (growthChartInstance) { growthChartInstance.destroy(); growthChartInstance = null; }
+
+  // Render chart
+  const ctx = document.getElementById('growthChart').getContext('2d');
+  growthChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: data.labels,
+      datasets: [{
+        data: data.values,
+        borderColor: '#014a4c',
+        backgroundColor: 'rgba(124,235,198,0.12)',
+        fill: true,
+        tension: 0.35,
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: '#014a4c',
+        pointHoverBorderColor: '#fff',
+        pointHoverBorderWidth: 2,
+        borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#002e30',
+          titleColor: 'rgba(255,255,255,0.6)',
+          bodyColor: '#ffffff',
+          padding: 12,
+          cornerRadius: 8,
+          titleFont: { family: 'Inter', size: 11 },
+          bodyFont: { family: 'Inter', size: 14, weight: '700' },
+          callbacks: {
+            label: ctx => '$' + Math.round(ctx.parsed.y).toLocaleString(),
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          border: { display: false },
+          ticks: {
+            color: '#7a9898',
+            font: { family: 'Inter', size: 11 },
+            maxTicksLimit: 8,
+            maxRotation: 0,
+          }
+        },
+        y: {
+          grid: { color: '#dde8e6', lineWidth: 1 },
+          border: { display: false, dash: [4,4] },
+          ticks: {
+            color: '#7a9898',
+            font: { family: 'Inter', size: 11 },
+            callback: val => '$' + (val >= 1000 ? (val/1000).toFixed(0)+'K' : val),
+          }
+        }
+      }
+    }
+  });
+
+  document.getElementById('growthDrawer').classList.add('open');
+}
+
+// ─── Triggers ─────────────────────────────────────────────────
+document.querySelectorAll('.growth-link').forEach(btn => {
+  btn.addEventListener('click', () => openGrowthDrawer(btn.dataset.growth));
+});
+
+// ─── Close ────────────────────────────────────────────────────
+const growthDrawer = document.getElementById('growthDrawer');
+document.getElementById('drawerClose').addEventListener('click', () => growthDrawer.classList.remove('open'));
+growthDrawer.addEventListener('click', e => { if (e.target === growthDrawer) growthDrawer.classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') growthDrawer.classList.remove('open'); });
+</script>
+
+</body>
+</html>
